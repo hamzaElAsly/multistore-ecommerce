@@ -1,0 +1,124 @@
+import axios from "axios";
+import { useState } from "react"
+import { useNavigate } from "react-router-dom";
+
+export default function Login({data}){
+
+  const navigate = useNavigate();
+  const [prénom, setPrénom] =  useState("");
+  const [nom, setNom] =  useState("");
+  const [dn, setDn] =  useState("");
+  const [c, setC] =  useState("");
+  const [cp, setCp] =  useState("");
+  const [adrs, setAdrs] =  useState("");
+  const [ville, setVille] =  useState("");
+  const [tel, setTel] =  useState("");
+  const [mail, setMail] =  useState("");
+  const [pwd, setPwd] =  useState("");
+  const [user, setUser] =  useState();
+
+  const handleLogin = (event) => {
+    event.preventDefault();
+    axios.post('http://localhost:8081/login', { email: mail, pass: pwd })
+      .then(res => { setUser(res.data)
+      console.log(user);})
+      // navigate('/')
+      .catch(err => { setUser("Une erreur est survenue lors de la connexion.", err); }
+    );
+  };
+
+  const handleRegistre = (event) => {
+    event.preventDefault();
+    axios.post('http://localhost:8081/inscrire', { email: mail, pass: pwd, nom: nom, prénom: prénom, date: dn, civ: c, codeP: cp, adresse: adrs, ville: ville, tel: tel })
+      .then(res => { console.log(res.data)
+      navigate('/panier')
+      })
+      .catch(err => { setUser("Une erreur est survenue lors de la connexion.", err); }
+    );
+  };
+  
+  
+  return (
+  <div className="login-popup">
+    <div className="tab tab-nav-boxed tab-nav-center tab-nav-underline">
+        <ul className="nav nav-tabs text-uppercase" role="tablist">
+          <li className="nav-item">
+            <a href="#sign-in" className="nav-link active">Sign In</a>
+          </li>
+          <li className="nav-item">
+            <a href="#sign-up" className="nav-link">Sign Up</a>
+          </li>
+        </ul>
+        <div className="tab-content">
+          <form className="tab-pane active" id="sign-in" onSubmit={handleLogin}>
+              <div className="form-group">
+                <label>adresse email <span style={{color:'red'}}>*</span></label>
+                <input type="email"    className="form-control" onChange={e => setMail(e.target.value)} name="username" id="username"  />{/*  */}
+              </div>
+              <div className="form-group mb-0">
+                <label>Password <span style={{color:'red'}}>*</span></label>
+                <input type="password" className="form-control" onChange={e => setPwd(e.target.value)} name="password" id="password"  />{/*  */}
+              </div>
+              <>
+                {user && (
+                  <div className="alert alert-icon alert-error alert-bg alert-inline">
+                    <h4 className="alert-title"> <i className="w-icon-times-circle"></i> Oh snap! </h4>
+                    {'   '} {user.message}
+                  </div>
+                )}
+              </>
+              <div className="form-checkbox d-flex align-items-center justify-content-between">
+                <a href="https://google.com/">Last your password?</a>
+              </div>
+              <button type="submit" className="btn btn-primary w-100">Sign In</button>
+          </form>
+
+          <form  className="tab-pane" id="sign-up" onSubmit={handleRegistre}>
+            <div className="form-group">
+              <label>Prénom</label> <input type="text" onChange={e => setPrénom(e.target.value)}  className="form-control" required />
+            </div>
+            <div className="form-group">
+              <label>Nom</label> <input type="text" onChange={e => setNom(e.target.value)}  className="form-control" required />
+            </div>
+            <div className="form-group">
+              <label>Date naissance</label> <input type="date" onChange={e => setDn(e.target.value)}  className="form-control" required />
+            </div>
+            <div className="form-group">
+              <label>Civilité</label> <input type="text" onChange={e => setC(e.target.value)}  className="form-control" required />
+            </div>
+            <div className="form-group mb-5">
+              <label>Adresse</label> <input type="text" onChange={e => setAdrs(e.target.value)}  className="form-control" required />
+            </div>
+            <div className="form-group mb-5">
+              <label>Code Postale</label> <input type="text" onChange={e => setCp(e.target.value)}  className="form-control" required />
+            </div>
+            <div className="form-group mb-5">
+              <label>Ville</label> <input type="text" onChange={e => setVille(e.target.value)}  className="form-control" required />
+            </div>
+            <div className="form-group mb-5">
+              <label>Téléphone</label> <input type="text" onChange={e => setTel(e.target.value)}  className="form-control" required />              
+            </div>
+            <div className="form-group mb-5">
+              <label>Adresse email</label> <input type="text" onChange={e => setMail(e.target.value)}  className="form-control" required />
+            </div>
+            <div className="form-group mb-5">
+              <label>Mot de pass</label> <input type="text" onChange={e => setPwd(e.target.value)}  className="form-control" required />
+            </div>
+            <p>Vos données personnelles seront utilisées pour soutenir votre expérience sur ce site Web, 
+              pour gérer l'accès à votre compte et à d'autres fins décrites dans notre 
+              <a href="https://google.com/" className="text-primary"> politique de confidentialité</a>.
+            </p>
+            <a href="https://google.com/" className="d-block mb-5 text-primary">Inscrivez-vous en tant que vendeur ?</a>
+            <button type="submit" className="btn btn-primary">S'inscrire</button>
+          </form>
+        </div>
+        <p className="text-center">Connectez-vous avec votre compte social</p>
+        <div className="social-icons social-icon-border-color d-flex justify-content-center">
+            {/* <a href="https://google.com/" className="social-icon social-facebook w-icon-facebook" ></a>
+            <a href="https://google.com/" className="social-icon social-twitter w-icon-twitter" ></a>
+            <a href="https://google.com/" className="social-icon social-google fab fa-google" ></a> */}
+        </div>
+    </div>
+  </div>
+  )
+}
